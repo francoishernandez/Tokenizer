@@ -686,6 +686,7 @@ def test_vocab_pickle():
     assert vocab_clone.default_id == 0
     assert vocab_clone.counters == [_MAX_COUNTER, 3, 1, 2]
 
+
 def test_protected_tokens():
     pyonmttok.set_random_seed(42)
 
