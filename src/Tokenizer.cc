@@ -164,6 +164,7 @@ namespace onmt
   {
     _options.validate();
     set_subword_encoder(subword_encoder);
+    set_protected_tokens(_options.protected_tokens);
   }
 
   Tokenizer::Tokenizer(Mode mode,
