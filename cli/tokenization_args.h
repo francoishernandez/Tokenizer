@@ -37,6 +37,8 @@ inline void add_tokenization_options(cxxopts::Options& options)
      cxxopts::value<bool>()->default_value("false"))
     ("support_prior_joiners", "If the input text has joiners, keep them",
      cxxopts::value<bool>()->default_value("false"))
+    ("protected_tokens", "Path to a file containing protected tokens (one per line)",
+   cxxopts::value<std::string>()->default_value(""))
     ;
 
   options.add_options("Segmentation")

@@ -79,7 +79,7 @@ namespace onmt
 
     for (const auto& token : tokens)
     {
-      if (token.is_placeholder()) {
+      if (token.is_placeholder() || token.protect) {
         segments.push_back(token);
         continue;
       }

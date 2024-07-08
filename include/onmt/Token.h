@@ -34,6 +34,7 @@ namespace onmt
     bool join_right = false;
     bool spacer = false;
     bool preserve = false;
+    bool protect = false;
     std::vector<std::string> features;
 
     Token() = default;

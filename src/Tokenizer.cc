@@ -74,6 +74,7 @@ namespace onmt
     Space,
     Other,
     Placeholder,
+    Protected
   };
 
 
@@ -808,6 +809,47 @@ namespace onmt
 
     for (size_t i = 0; i < chars.size(); ++i)
     {
+       // Check for protected tokens first
+      bool is_protected = false;
+      size_t protected_length = 0;
+      if (!_protected_tokens.empty())
+      {
+        size_t remaining_length = text.length() - (chars[i].data - text.c_str());
+        std::string current_substring(chars[i].data, remaining_length);
+
+        for (const auto& protected_token : _protected_tokens)
+        {
+          if (current_substring.compare(0, protected_token.length(), protected_token) == 0)
+          {
+            is_protected = true;
+            protected_length = protected_token.length();
+            break;
+          }
+        }
+      }
+
+      if (is_protected)
+      {
+        if (state != State::Space)
+        {
+          builder.segment();
+        }
+        Token token;
+        token.surface = std::string(chars[i].data, protected_length);
+        token.protect = true;
+        annotated_tokens.push_back(std::move(token));
+
+        // Skip the characters of the protected token
+        size_t chars_to_skip = 0;
+        while (chars_to_skip < protected_length && i < chars.size())
+        {
+          chars_to_skip += chars[i].length;
+          i++;
+        }
+        i--; // Adjust for the loop increment
+        state = State::Space;
+        continue;
+      }
       const auto& c = chars[i];
       const unicode::code_point_t v = c.value;
       if (v < 32 || v == 0xFEFF)  // skip special characters and BOM
@@ -1064,6 +1106,13 @@ namespace onmt
       const auto& str = token.surface;
       const auto casing = token.casing;
 
+      // Handle protected tokens
+      if (_protected_tokens.find(str) != _protected_tokens.end())
+      {
+        add_final_token(tokens, features, _options.case_feature, str);
+        continue;
+      }
+
       if (token.has_features())
       {
         const auto& token_features = token.features;
@@ -1145,4 +1194,15 @@ namespace onmt
     return ::onmt::is_placeholder(str);
   }
 
+  std::pair<bool, size_t> Tokenizer::is_protected_token(const std::string& text, size_t start) const
+  {
+    for (const auto& protected_token : _protected_tokens)
+    {
+      if (text.compare(start, protected_token.length(), protected_token) == 0)
+      {
+        return {true, protected_token.length()};
+      }
+    }
+    return {false, 0};
+  }
 }

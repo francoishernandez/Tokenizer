@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
 
 #include <cxxopts.hpp>
 
@@ -7,6 +9,26 @@
 #include <onmt/SentencePiece.h>
 
 #include "tokenization_args.h"
+
+// might be better elsewhere
+std::vector<std::string> read_protected_tokens(const std::string& filepath) {
+  std::vector<std::string> protected_tokens;
+  std::ifstream file(filepath);
+  std::string line;
+
+  if (!file.is_open()) {
+    std::cerr << "Warning: Could not open protected tokens file: " << filepath << std::endl;
+    return protected_tokens;
+  }
+
+  while (std::getline(file, line)) {
+    if (!line.empty()) {
+      protected_tokens.push_back(line);
+    }
+  }
+
+  return protected_tokens;
+}
 
 int main(int argc, char* argv[])
 {
@@ -97,6 +119,17 @@ int main(int argc, char* argv[])
 
   onmt::Tokenizer tokenizer(std::move(options),
                             std::shared_ptr<onmt::SubwordEncoder>(subword_encoder));
+
+  // Add protected tokens if specified
+  std::string protected_tokens_path = vm["protected_tokens"].as<std::string>();
+  if (!protected_tokens_path.empty()) {
+    std::vector<std::string> protected_tokens = read_protected_tokens(protected_tokens_path);
+    tokenizer.set_protected_tokens(protected_tokens);
+    if (vm["verbose"].as<bool>()) {
+      std::cout << "Loaded " << protected_tokens.size() << " protected tokens from " << protected_tokens_path << std::endl;
+    }
+  }
+
 
   tokenizer.tokenize_stream(std::cin,
                             std::cout,

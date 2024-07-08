@@ -124,6 +124,7 @@ namespace onmt
   private:
     Options _options;
     std::shared_ptr<const SubwordEncoder> _subword_encoder;
+    std::unordered_set<std::string> _protected_tokens;
 
     void tokenize_on_placeholders(const std::string& text,
                                   std::vector<Token>& annotated_tokens) const;
@@ -152,6 +153,9 @@ namespace onmt
                       const std::vector<std::vector<std::string>>& features,
                       std::vector<Token>& tokens,
                       std::vector<size_t>* index_map = nullptr) const;
+
+    std::pair<bool, size_t> is_protected_token(const std::string& text, size_t start) const;
+
 
   public:
     // The symbols below are deprecated but kept for backward compatibility.
@@ -204,6 +208,20 @@ namespace onmt
     void unset_annotate();
     bool add_alphabet_to_segment(const std::string& alphabet);
     static bool is_placeholder(const std::string& str);
+
+    void add_protected_token(const std::string& token)
+    {
+      _protected_tokens.insert(token);
+    }
+
+    void set_protected_tokens(const std::vector<std::string>& protected_tokens)
+    {
+      _protected_tokens.clear();
+      for (const auto& token : protected_tokens)
+      {
+        _protected_tokens.insert(token);
+      }
+    }
 
   };
 
