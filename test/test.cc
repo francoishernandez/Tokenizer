@@ -1095,7 +1095,7 @@ TEST(TokenizerTest, ProtectedTokens) {
   const std::vector<std::string> protected_tokens = {"abcdefgh"};
   options.protected_tokens = protected_tokens;
   Tokenizer tokenizer(options, std::make_shared<BPE>(get_data("bpe-models/testcode.v0.1")));
-  test_tok(tokenizer, "Test abcdefgh!", "T e s t abcdefgh !")
+  test_tok(tokenizer, "Test abcdefgh!", "T e s t abcdefgh !");
 }
 
 TEST(TokenizerTest, TokenInterface) {
