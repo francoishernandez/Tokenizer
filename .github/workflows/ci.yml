@@ -36,8 +36,10 @@ jobs:
           cmake --version
           brew reinstall icu4c
           echo "ICU_ROOT=$(brew --prefix icu4c)" >> $GITHUB_ENV
+          echo $ICU_ROOT
+          echo "ICU_ROOT=$(brew --prefix icu4c)"
           echo "LD_LIBRARY_PATH=$(brew --prefix icu4c)/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          cmake -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$PWD/install -DICU_ROOT=/usr/local/opt/icu4c/ .
+          cmake -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$PWD/install -DICU_ROOT=$ICU_ROOT .
           make install
 
       - name: Test
