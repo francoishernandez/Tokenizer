@@ -53,6 +53,7 @@ namespace onmt
       bool segment_numbers = false;
       bool segment_alphabet_change = false;
       std::vector<std::string> segment_alphabet;
+      std::vector<std::string> protected_tokens;
 
       Options() = default;
       Options(Mode mode, int legacy_flags, const std::string& joiner = joiner_marker);
@@ -209,19 +210,9 @@ namespace onmt
     bool add_alphabet_to_segment(const std::string& alphabet);
     static bool is_placeholder(const std::string& str);
 
-    void add_protected_token(const std::string& token)
-    {
-      _protected_tokens.insert(token);
-    }
-
-    void set_protected_tokens(const std::vector<std::string>& protected_tokens)
-    {
-      _protected_tokens.clear();
-      for (const auto& token : protected_tokens)
-      {
-        _protected_tokens.insert(token);
-      }
-    }
+    void add_protected_token(const std::string& token);
+    void set_protected_tokens(const std::vector<std::string>& protected_tokens);
+    void load_protected_tokens(const std::string& filepath);
 
   };
 

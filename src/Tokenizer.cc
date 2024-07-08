@@ -6,6 +6,8 @@
 #include "Casing.h"
 #include "Utils.h"
 
+#include <fstream>
+
 namespace onmt
 {
 
@@ -1204,5 +1206,37 @@ namespace onmt
       }
     }
     return {false, 0};
+  }
+
+  void Tokenizer::add_protected_token(const std::string& token)
+  {
+    _protected_tokens.insert(token);
+  }
+
+  void Tokenizer::set_protected_tokens(const std::vector<std::string>& protected_tokens)
+  {
+    _protected_tokens.clear();
+    for (const auto& token : protected_tokens)
+    {
+      _protected_tokens.insert(token);
+    }
+  }
+
+  void Tokenizer::load_protected_tokens(const std::string& filepath) {
+    std::vector<std::string> protected_tokens;
+    std::ifstream file(filepath);
+    std::string line;
+
+    if (!file.is_open()) {
+      std::cerr << "Warning: Could not open protected tokens file: " << filepath << std::endl;
+      set_protected_tokens(protected_tokens);
+    }
+
+    while (std::getline(file, line)) {
+      if (!line.empty()) {
+        protected_tokens.push_back(line);
+      }
+    }
+    set_protected_tokens(protected_tokens);
   }
 }

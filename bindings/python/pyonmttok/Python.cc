@@ -54,7 +54,8 @@ public:
                    bool segment_numbers,
                    bool segment_alphabet_change,
                    bool support_prior_joiners,
-                   const std::optional<std::vector<std::string>>& segment_alphabet)
+                   const std::optional<std::vector<std::string>>& segment_alphabet,
+                   const std::optional<std::vector<std::string>>& protected_tokens)
   {
     std::shared_ptr<onmt::SubwordEncoder> subword_encoder;
 
@@ -98,6 +99,9 @@ public:
         subword_encoder->load_vocabulary(bpe_vocab_path.value(), bpe_vocab_threshold, &options);
     }
 
+    if (protected_tokens)
+      options.protected_tokens = protected_tokens.value();
+
     _tokenizer = std::make_shared<onmt::Tokenizer>(options, subword_encoder);
   }
 
@@ -126,7 +130,8 @@ public:
       "segment_case"_a=options.segment_case,
       "segment_numbers"_a=options.segment_numbers,
       "segment_alphabet_change"_a=options.segment_alphabet_change,
-      "segment_alphabet"_a=options.segment_alphabet
+      "segment_alphabet"_a=options.segment_alphabet,
+      "protected_tokens"_a=options.protected_tokens
       );
   }
 
@@ -598,6 +603,7 @@ PYBIND11_MODULE(_ext, m)
          bool,
          bool,
          bool,
+         const std::optional<std::vector<std::string>>&,
          const std::optional<std::vector<std::string>>&>(),
          py::arg("mode"),
          py::kw_only(),
@@ -629,7 +635,8 @@ PYBIND11_MODULE(_ext, m)
          py::arg("segment_numbers")=false,
          py::arg("segment_alphabet_change")=false,
          py::arg("support_prior_joiners")=false,
-         py::arg("segment_alphabet")=py::none())
+         py::arg("segment_alphabet")=py::none(),
+         py::arg("protected_tokens")=py::none())
     .def(py::init<const TokenizerWrapper&>(), py::arg("tokenizer"))
 
     .def_property_readonly("options", &TokenizerWrapper::get_options)
