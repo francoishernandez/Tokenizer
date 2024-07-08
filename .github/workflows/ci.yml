@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest] #, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -33,6 +33,7 @@ jobs:
       - name: Build and install
         if: startsWith(matrix.os, 'macos')
         run: |
+          cmake --version
           cmake -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$PWD/install -DICU_ROOT=/usr/local/opt/icu4c/ .
           make install
 

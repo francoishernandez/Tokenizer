@@ -5,6 +5,11 @@ if(POLICY CMP0091)
   cmake_policy(SET CMP0091 NEW)
 endif()
 
+# Set policy for *_ROOT packages
+if(POLICY CMP0074)
+  cmake_policy(SET CMP0074 NEW)
+endif()
+
 project(OpenNMTTokenizer)
 
 option(BUILD_TESTS "Compile unit tests" OFF)
