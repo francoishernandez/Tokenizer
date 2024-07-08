@@ -34,6 +34,7 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: |
           cmake --version
+          brew install icu4c
           cmake -DBUILD_TESTS=ON -DCMAKE_INSTALL_PREFIX=$PWD/install -DICU_ROOT=/usr/local/opt/icu4c/ .
           make install
 
