@@ -685,3 +685,21 @@ def test_vocab_pickle():
     assert vocab_clone.ids_to_tokens == ["z", "a", "b", "c"]
     assert vocab_clone.default_id == 0
     assert vocab_clone.counters == [_MAX_COUNTER, 3, 1, 2]
+
+
+def test_protected_tokens():
+    pyonmttok.set_random_seed(42)
+
+    tokenizer = pyonmttok.Tokenizer(
+        "conservative",
+        bpe_model_path=os.path.join(_DATA_DIR, "bpe-models", "testcode.v0.1"),
+        protected_tokens=["abcdefgh"],
+    )
+    assert tokenizer.tokenize("Test abcdefgh!")[0] == [
+        "T",
+        "e",
+        "s",
+        "t",
+        "abcdefgh",
+        "!",
+    ]

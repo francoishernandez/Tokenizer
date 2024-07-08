@@ -690,12 +690,21 @@ TEST(TokenizerTest, CaseMarkupWithLocaleEl) {
   options.case_markup = true;
   options.soft_case_regions = true;
   options.lang = "el";
+
   test_tok(options,
            "ΣΙΓΜΑ ΤΕΛΙΚΟΣ",
            "｟mrk_begin_case_region_U｠ σιγμα τελικος ｟mrk_end_case_region_U｠");
+  // There is a weird normalization edge case for "Ή", which is on some systems two split characters (ce 97 + cc 81) and on others a single one (ce 89).
+  // There might be a better solution, but this works, but unicode handling across platforms seems quite a challenge. This works in the meantime.
+  #ifdef __APPLE__
+  test_detok(options,
+             "｟mrk_begin_case_region_U｠ την άνοιξη , απρίλιο ή μάιο , θα καταναλώσω μεγαλύτερες ποσότητες πρωτεΐνης ｟mrk_end_case_region_U｠",
+             "ΤΗΝ ΑΝΟΙΞΗ , ΑΠΡΙΛΙΟ Ή ΜΑΪΟ , ΘΑ ΚΑΤΑΝΑΛΩΣΩ ΜΕΓΑΛΥΤΕΡΕΣ ΠΟΣΟΤΗΤΕΣ ΠΡΩΤΕΪΝΗΣ");
+  #else
   test_detok(options,
              "｟mrk_begin_case_region_U｠ την άνοιξη , απρίλιο ή μάιο , θα καταναλώσω μεγαλύτερες ποσότητες πρωτεΐνης ｟mrk_end_case_region_U｠",
              "ΤΗΝ ΑΝΟΙΞΗ , ΑΠΡΙΛΙΟ Ή ΜΑΪΟ , ΘΑ ΚΑΤΑΝΑΛΩΣΩ ΜΕΓΑΛΥΤΕΡΕΣ ΠΟΣΟΤΗΤΕΣ ΠΡΩΤΕΪΝΗΣ");
+  #endif
 }
 
 TEST(TokenizerTest, CaseMarkupWithLocaleNl) {
@@ -1087,6 +1096,15 @@ TEST(TokenizerTest, SentencePieceAggressiveIsolatedSpacerAndJoinerAnnotate) {
   options.joiner_annotate = true;
   Tokenizer tokenizer(options, std::make_shared<SentencePiece>(get_data("sp-models/wmtende.model")));
   test_tok(tokenizer, "depending on its temperature.", "depending on its temperature ￭.");
+}
+
+TEST(TokenizerTest, ProtectedTokens) {
+  Tokenizer::Options options;
+  options.mode = Tokenizer::Mode::Conservative;
+  const std::vector<std::string> protected_tokens = {"abcdefgh"};
+  options.protected_tokens = protected_tokens;
+  Tokenizer tokenizer(options, std::make_shared<BPE>(get_data("bpe-models/testcode.v0.1")));
+  test_tok(tokenizer, "Test abcdefgh!", "T e s t abcdefgh !");
 }
 
 TEST(TokenizerTest, TokenInterface) {

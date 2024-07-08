@@ -10,7 +10,7 @@ CMAKE_EXTRA_ARGS=""
 if [ "$CIBW_ARCHS" == "arm64" ]; then
 
     # Download ICU ARM64 binaries from Homebrew.
-    brew fetch --force --bottle-tag=arm64_big_sur icu4c \
+    brew fetch --force icu4c \
         | grep "Downloaded to" \
         | awk '{ print $3 }' \
         | xargs -I{} tar xf {} -C $ROOT_DIR
@@ -37,12 +37,15 @@ fi
 cd $ROOT_DIR
 
 # Install cmake.
-pip install "cmake==3.18.*"
+pip install cmake #"cmake==3.18.*"
 
 # Build Tokenizer.
 rm -rf build
 mkdir build
 cd build
+if [ "$IS_MACOS" = "1" ]; then
+    CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DCMAKE_INSTALL_PREFIX=$ROOT_DIR"
+fi
 cmake -DLIB_ONLY=ON -DICU_ROOT=$ICU_ROOT $CMAKE_EXTRA_ARGS ..
 VERBOSE=1 make -j2 install
 cd $ROOT_DIR
