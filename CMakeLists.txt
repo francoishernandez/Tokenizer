@@ -10,6 +10,9 @@ if(POLICY CMP0074)
   cmake_policy(SET CMP0074 NEW)
 endif()
 
+# patch for sentencepiece
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-enum-constexpr-conversion" )
+
 project(OpenNMTTokenizer)
 
 option(BUILD_TESTS "Compile unit tests" OFF)

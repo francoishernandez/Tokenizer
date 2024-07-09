@@ -81,13 +81,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04] #, macos-11, windows-2019]
+        os: [ubuntu-20.04, macos-11, windows-2019]
         arch: [auto64]
         include:
         - os: ubuntu-20.04
           arch: aarch64
-        # - os: macos-11
-        #   arch: arm64
+        - os: macos-11
+          arch: arm64
 
     steps:
       - uses: actions/checkout@v3
