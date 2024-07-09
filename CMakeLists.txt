@@ -11,7 +11,9 @@ if(POLICY CMP0074)
 endif()
 
 # patch for sentencepiece
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-enum-constexpr-conversion" )
+if (${APPLE})
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-enum-constexpr-conversion" )
+endif()
 
 project(OpenNMTTokenizer)
 
