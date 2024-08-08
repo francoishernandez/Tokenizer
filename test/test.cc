@@ -690,12 +690,19 @@ TEST(TokenizerTest, CaseMarkupWithLocaleEl) {
   options.case_markup = true;
   options.soft_case_regions = true;
   options.lang = "el";
+
   test_tok(options,
            "ΣΙΓΜΑ ΤΕΛΙΚΟΣ",
            "｟mrk_begin_case_region_U｠ σιγμα τελικος ｟mrk_end_case_region_U｠");
+  #ifdef __APPLE__
+  test_detok(options,
+             "｟mrk_begin_case_region_U｠ την άνοιξη , απρίλιο ή μάιο , θα καταναλώσω μεγαλύτερες ποσότητες πρωτεΐνης ｟mrk_end_case_region_U｠",
+             "ΤΗΝ ΑΝΟΙΞΗ , ΑΠΡΙΛΙΟ Ή ΜΑΪΟ , ΘΑ ΚΑΤΑΝΑΛΩΣΩ ΜΕΓΑΛΥΤΕΡΕΣ ΠΟΣΟΤΗΤΕΣ ΠΡΩΤΕΪΝΗΣ");
+  #else
   test_detok(options,
              "｟mrk_begin_case_region_U｠ την άνοιξη , απρίλιο ή μάιο , θα καταναλώσω μεγαλύτερες ποσότητες πρωτεΐνης ｟mrk_end_case_region_U｠",
              "ΤΗΝ ΑΝΟΙΞΗ , ΑΠΡΙΛΙΟ Ή ΜΑΪΟ , ΘΑ ΚΑΤΑΝΑΛΩΣΩ ΜΕΓΑΛΥΤΕΡΕΣ ΠΟΣΟΤΗΤΕΣ ΠΡΩΤΕΪΝΗΣ");
+  #endif
 }
 
 TEST(TokenizerTest, CaseMarkupWithLocaleNl) {
