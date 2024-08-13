@@ -10,7 +10,7 @@ CMAKE_EXTRA_ARGS=""
 if [ "$CIBW_ARCHS" == "arm64" ]; then
 
     # Download ICU ARM64 binaries from Homebrew.
-    brew fetch --force --bottle-tag=arm64_big_sur icu4c \
+    brew fetch --force icu4c \
         | grep "Downloaded to" \
         | awk '{ print $3 }' \
         | xargs -I{} tar xf {} -C $ROOT_DIR
