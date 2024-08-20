@@ -43,6 +43,9 @@ pip install cmake #"cmake==3.18.*"
 rm -rf build
 mkdir build
 cd build
+if [ "$IS_MACOS" = "1" ]; then
+    CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DCMAKE_INSTALL_PREFIX=$ROOT_DIR"
+fi
 cmake -DLIB_ONLY=ON -DICU_ROOT=$ICU_ROOT $CMAKE_EXTRA_ARGS ..
 VERBOSE=1 make -j2 install
 cd $ROOT_DIR

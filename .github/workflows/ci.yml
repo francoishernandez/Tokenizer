@@ -105,6 +105,7 @@ jobs:
           output-dir: wheelhouse
         env:
           CIBW_ENVIRONMENT_WINDOWS: TOKENIZER_ROOT='${{ github.workspace }}\install'
+          CIBW_ENVIRONMENT_MACOS: IS_MACOS=1
           CIBW_BEFORE_ALL: bindings/python/tools/prepare_build_environment.sh
           CIBW_BEFORE_ALL_WINDOWS: bash bindings/python/tools/prepare_build_environment_windows.sh
           CIBW_BEFORE_BUILD: pip install pybind11==2.10.1
