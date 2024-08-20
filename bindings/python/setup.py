@@ -26,6 +26,7 @@ def _get_project_version():
 
 def _maybe_add_library_root(lib_name, header_only=False):
     root = os.environ.get("%s_ROOT" % lib_name)
+    print(root)
     if root is None:
         return
     include_dirs.append(os.path.join(root, "include"))
@@ -38,6 +39,8 @@ def _maybe_add_library_root(lib_name, header_only=False):
 
 
 _maybe_add_library_root("TOKENIZER")
+
+print("include_dirs:", include_dirs)
 
 cflags = ["-std=c++17", "-fvisibility=hidden"]
 ldflags = []
