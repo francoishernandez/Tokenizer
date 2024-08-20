@@ -49,3 +49,4 @@ fi
 cmake -DLIB_ONLY=ON -DICU_ROOT=$ICU_ROOT $CMAKE_EXTRA_ARGS ..
 VERBOSE=1 make -j2 install
 cd $ROOT_DIR
+ls -lah $ROOT_DIR
